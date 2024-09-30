@@ -1,0 +1,98 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+h1 {
+    color: #4CAF50;
+}
+
+input[type=number] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 250px; /* Match the width of the scale */
+    box-sizing: border-box;
+}
+
+.button-container {
+    margin-top: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#resultFraction {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+#scale {
+    width: 250px; /* Adjusted width for 1 inch */
+    height: 50px;
+    border: 1px solid #000;
+    position: relative;
+    margin-top: 20px;
+    background-color: #fff;
+}
+
+.tick {
+    height: 10px;
+    width: 1px;
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+}
+
+.tick-1-2 {
+    height: 30px; /* Longer for 1/2 inch */
+    background-color: black;
+}
+
+.tick-1-4 {
+    height: 25px; /* Longer for 1/4 inch */
+    background-color: black;
+}
+
+.tick-1-8 {
+    height: 20px; /* Longer for 1/8 inch */
+    background-color: black;
+}
+
+.tick-1-16 {
+    height: 15px; /* Shorter for 1/16 inch */
+    background-color: black;
+}
+
+.pointer {
+    height: 50px;
+    width: 1px;
+    background-color: red;
+    position: absolute;
+    bottom: 0;
+}
+
+/* Hide arrows in number input */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
