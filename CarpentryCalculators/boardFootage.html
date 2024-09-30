@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Footage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        input, select {
+            width: 25%; /* Reduced width to 25% */
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Board Footage Calculator</h1>
+
+<div class="form-group">
+    <label for="thickness">Select Thickness (in Quarters):</label>
+    <select id="thickness">
+        <option value="1">4/4 (1 inch)</option>
+        <option value="1.25">5/4 (1.25 inches)</option>
+        <option value="1.5">6/4 (1.5 inches)</option>
+        <option value="2">8/4 (2 inches)</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="width">Width (in inches):</label>
+    <input type="number" id="width" required>
+</div>
+
+<div class="form-group">
+    <label for="length">Length (in feet):</label>
+    <input type="number" id="length" required>
+</div>
+
+<div class="form-group">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" step="1" required>
+</div>
+
+<div class="form-group">
+    <label for="price">Price per BF ($):</label>
+    <input type="number" id="price" step="0.01" required>
+</div>
+
+<div class="form-group">
+    <label for="waste">Waste Percentage (%):</label>
+    <input type="number" id="waste" step="0.1" required>
+</div>
+
+<button onclick="calculateBoardFootage()">Calculate</button>
+<button onclick="resetForm()">Reset</button>
+
+<div class="result" id="result"></div>
+
+<script>
+function calculateBoardFootage() {
+    const thicknessInches = parseFloat(document.getElementById("thickness").value);
+    const width = parseFloat(document.getElementById("width").value);
+    const length = parseFloat(document.getElementById("length").value);
+    const pricePerBF = parseFloat(document.getElementById("price").value);
+    const quantity = parseFloat(document.getElementById("quantity").value);
+    const wastePercentage = parseFloat(document.getElementById("waste").value);
+    
+    // Calculate Board Feet for one piece
+    const boardFeetPerPiece = (thicknessInches * width * length) / 12;
+
+    // Calculate total Board Feet for all pieces
+    const totalBoardFeet = boardFeetPerPiece * quantity;
+
+    // Calculate waste in Board Feet
+    const wasteBoardFeet = totalBoardFeet * (wastePercentage / 100);
+
+    // Calculate total Board Feet including waste
+    const totalWithWaste = totalBoardFeet + wasteBoardFeet;
+
+    // Calculate total cost considering waste
+    const totalCost = totalWithWaste * pricePerBF;
+
+    // Display results
+    document.getElementById("result").innerHTML = `
+        <h2>Calculation Results:</h2>
+        <p>Board Footage: ${totalBoardFeet.toFixed(2)} BF</p>
+        <p>Waste: ${wasteBoardFeet.toFixed(2)} BF</p>
+        <p>Total Board Footage (including waste): ${totalWithWaste.toFixed(2)} BF</p>
+        <p>Total Cost: $${totalCost.toFixed(2)}</p>
+    `;
+}
+
+function resetForm() {
+    document.getElementById("thickness").value = '1';
+    document.getElementById("width").value = '';
+    document.getElementById("length").value = '';
+    document.getElementById("quantity").value = '';
+    document.getElementById("price").value = '';
+    document.getElementById("waste").value = '';
+    document.getElementById("result").innerHTML = '';
+}
+</script>
+
+</body>
+</html>
