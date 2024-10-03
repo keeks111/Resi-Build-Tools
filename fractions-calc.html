@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .display {
+            width: 100%;
+            height: 50px;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 24px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            padding: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .button.operator {
+            background-color: #f0ad4e;
+            color: #fff;
+        }
+        .button.equals {
+            background-color: #5cb85c;
+            color: #fff;
+            grid-column: span 4;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="display" id="display" readonly>
+        <div class="buttons">
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button operator" onclick="setOperation('+')">+</button>
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button operator" onclick="setOperation('-')">-</button>
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button operator" onclick="setOperation('*')">*</button>
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="appendFraction('/')">/</button>
+            <button class="button" onclick="appendSpace()">Space</button>
+            <button class="button operator" onclick="setOperation('/')">÷</button>
+            <button class="button clear" onclick="clearDisplay()">C</button>
+            <button class="button equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentInput = '';
+        let currentOperation = null;
+        let previousInput = '';
+
+        function appendNumber(number) {
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function appendFraction(fraction) {
+            if (!currentInput.includes('/')) {
+                currentInput += fraction;
+                updateDisplay();
+            }
+        }
+
+        function appendSpace() {
+            currentInput += ' ';
+            updateDisplay();
+        }
+
+        function setOperation(operation) {
+            if (currentInput === '') return;
+            if (previousInput !== '') {
+                calculate();
+            }
+            currentOperation = operation;
+            previousInput = currentInput;
+            currentInput = '';
+        }
+
+                                function calculate() {
+                    let result;
+                    const prev = parseMixedNumber(previousInput);
+                    const current = parseMixedNumber(currentInput);
+        
+                    switch (currentOperation) {
+                        case '+':
+                            result = addFractions(prev, current);
+                            break;
+                        case '-':
+                            result = subtractFractions(prev, current);
+                            break;
+                        case '*':
+                            result = multiplyFractions(prev, current);
+                            break;
+                        case '/':
+                            result = divideFractions(prev, current);
+                            break;
+                        default:
+                            return;
+                    }
+        
+                    currentInput = formatMixedNumber(result);
+                    currentOperation = null;
+                    previousInput = '';
+                    updateDisplay();
+                }
+        
+                function clearDisplay() {
+                    currentInput = '';
+                    previousInput = '';
+                    currentOperation = null;
+                    updateDisplay();
+                }
+        
+                function updateDisplay() {
+                    document.getElementById('display').value = currentInput;
+                }
+        
+                function parseMixedNumber(input) {
+                    const parts = input.split(' ');
+                    if (parts.length === 2) {
+                        const wholeNumber = parseInt(parts[0]);
+                        const fraction = parseFraction(parts[1]);
+                        return {
+                            numerator: wholeNumber * fraction.denominator + fraction.numerator,
+                            denominator: fraction.denominator
+                        };
+                    }
+                    return parseFraction(input);
+                }
+        
+                function parseFraction(fraction) {
+                    const parts = fraction.split('/');
+                    if (parts.length === 1) {
+                        return { numerator: parseInt(parts[0]), denominator: 1 };
+                    }
+                    return { numerator: parseInt(parts[0]), denominator: parseInt(parts[1]) };
+                }
+        
+                function formatMixedNumber(fraction) {
+                    const wholeNumber = Math.floor(fraction.numerator / fraction.denominator);
+                    const remainder = fraction.numerator % fraction.denominator;
+                    if (remainder === 0) {
+                        return wholeNumber.toString();
+                    }
+                    if (wholeNumber === 0) {
+                        return formatFraction({ numerator: remainder, denominator: fraction.denominator });
+                    }
+                    return `${wholeNumber} ${formatFraction({ numerator: remainder, denominator: fraction.denominator })}`;
+                }
+
+                function formatFraction(fraction) {
+                    const simplified = simplifyFraction(fraction);
+                    if (simplified.denominator === 1) {
+                        return simplified.numerator.toString();
+                    }
+                    return `${simplified.numerator}/${simplified.denominator}`;
+                }
+
+                function addFractions(a, b) {
+                    const numerator = a.numerator * b.denominator + b.numerator * a.denominator;
+                    const denominator = a.denominator * b.denominator;
+                    return simplifyFraction({ numerator, denominator });
+                }
+
+                function subtractFractions(a, b) {
+                    const numerator = a.numerator * b.denominator - b.numerator * a.denominator;
+                    const denominator = a.denominator * b.denominator;
+                    return simplifyFraction({ numerator, denominator });
+                }
+
+                function multiplyFractions(a, b) {
+                    const numerator = a.numerator * b.numerator;
+                    const denominator = a.denominator * b.denominator;
+                    return simplifyFraction({ numerator, denominator });
+                }
+
+                function divideFractions(a, b) {
+                    const numerator = a.numerator * b.denominator;
+                    const denominator = a.denominator * b.numerator;
+                    return simplifyFraction({ numerator, denominator });
+                }
+
+                function simplifyFraction(fraction) {
+                    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+                    const divisor = gcd(fraction.numerator, fraction.denominator);
+                    let numerator = fraction.numerator / divisor;
+                    let denominator = fraction.denominator / divisor;
+
+                    const allowedDenominators = [2, 4, 8, 16, 32, 64];
+                    if (allowedDenominators.includes(denominator)) {
+                        return { numerator, denominator };
+                    }
+
+                    // Convert to decimal if not an allowed denominator
+                    const decimalValue = (numerator / denominator).toFixed(2);
+                    return { numerator: decimalValue, denominator: 1 };
+                }                
+                            
+        </script>
+    </body>
+</html>
