@@ -212,72 +212,69 @@
         }
 
         function formatMixedNumber(fraction) {
-            const wholeNumber = Math.floor(fraction.numerator / fraction.denominator);
-            const remainder = fraction.numerator % fraction.denominator;
-            if (remainder === 0) {
-                return wholeNumber.toString();
-            }
-            if (wholeNumber === 0) {
-                return formatFraction({ numerator: remainder, denominator: fraction.denominator });
-            }
-            const fractionPart = formatFraction({ numerator: remainder, denominator: fraction.denominator });
-            if (fractionPart.includes('/')) {
-                return `${wholeNumber} ${fractionPart}`;
-            } else {
-                return `${wholeNumber}${fractionPart}`;
-            }
+        const wholeNumber = Math.floor(fraction.numerator / fraction.denominator);
+        const remainder = fraction.numerator % fraction.denominator;
+        if (remainder === 0) {
+            return wholeNumber.toString();
+        }
+        if (wholeNumber === 0) {
+            return formatFraction({ numerator: remainder, denominator: fraction.denominator });
+        }
+        const fractionPart = formatFraction({ numerator: remainder, denominator: fraction.denominator });
+        if (fractionPart.includes('/')) {
+            return `${wholeNumber} ${fractionPart}`;
+        } else {
+            return `${wholeNumber + parseFloat(fractionPart)}`;
+        }
+    }
+
+    function formatFraction(fraction) {
+        const simplified = simplifyFraction(fraction);
+        if (simplified.denominator === 1) {
+            return simplified.numerator.toString();
+        }
+        return `${simplified.numerator}/${simplified.denominator}`;
+    }
+
+    function addFractions(a, b) {
+        const numerator = a.numerator * b.denominator + b.numerator * a.denominator;
+        const denominator = a.denominator * b.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function subtractFractions(a, b) {
+        const numerator = a.numerator * b.denominator - b.numerator * a.denominator;
+        const denominator = a.denominator * b.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function multiplyFractions(a, b) {
+        const numerator = a.numerator * b.numerator;
+        const denominator = a.denominator * b.denominator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function divideFractions(a, b) {
+        const numerator = a.numerator * b.denominator;
+        const denominator = a.denominator * b.numerator;
+        return simplifyFraction({ numerator, denominator });
+    }
+
+    function simplifyFraction(fraction) {
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const divisor = gcd(fraction.numerator, fraction.denominator);
+        let numerator = fraction.numerator / divisor;
+        let denominator = fraction.denominator / divisor;
+
+        const allowedDenominators = [2, 4, 8, 16, 32, 64];
+        if (allowedDenominators.includes(denominator)) {
+            return { numerator, denominator };
         }
 
-        function formatFraction(fraction) {
-            const simplified = simplifyFraction(fraction);
-            if (simplified.denominator === 1) {
-                return simplified.numerator.toString();
-            }
-            if (simplified.denominator === 1 && simplified.numerator % 1 !== 0) {
-                return simplified.numerator.toString();
-            }
-            return `${simplified.numerator}/${simplified.denominator}`;
-        }
-
-        function addFractions(a, b) {
-            const numerator = a.numerator * b.denominator + b.numerator * a.denominator;
-            const denominator = a.denominator * b.denominator;
-            return simplifyFraction({ numerator, denominator });
-        }
-
-        function subtractFractions(a, b) {
-            const numerator = a.numerator * b.denominator - b.numerator * a.denominator;
-            const denominator = a.denominator * b.denominator;
-            return simplifyFraction({ numerator, denominator });
-        }
-
-        function multiplyFractions(a, b) {
-            const numerator = a.numerator * b.numerator;
-            const denominator = a.denominator * b.denominator;
-            return simplifyFraction({ numerator, denominator });
-        }
-
-        function divideFractions(a, b) {
-            const numerator = a.numerator * b.denominator;
-            const denominator = a.denominator * b.numerator;
-            return simplifyFraction({ numerator, denominator });
-        }
-
-        function simplifyFraction(fraction) {
-            const gcd = (a, b) => b ? gcd(b, a % b) : a;
-            const divisor = gcd(fraction.numerator, fraction.denominator);
-            let numerator = fraction.numerator / divisor;
-            let denominator = fraction.denominator / divisor;
-
-            const allowedDenominators = [2, 4, 8, 16, 32, 64];
-            if (allowedDenominators.includes(denominator)) {
-                return { numerator, denominator };
-            }
-
-            // Convert to decimal if not an allowed denominator
-            const decimalValue = (numerator / denominator).toFixed(2);
-            return { numerator: parseFloat(decimalValue), denominator: 1 };
-        }
+        // Convert to decimal if not an allowed denominator
+        const decimalValue = (numerator / denominator).toFixed(2);
+        return { numerator: parseFloat(decimalValue), denominator: 1 };
+    }
     </script>
 </body>
 </html>
