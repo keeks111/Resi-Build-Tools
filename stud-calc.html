@@ -1,0 +1,151 @@
+\<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framing Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .result p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Framing Calculator</h2>
+
+    <label for="wall-length">Wall Length (Feet):</label>
+    <input type="number" id="wall-length" placeholder="Enter wall length">
+
+    <label for="stud-spacing">Stud Spacing (Inches):</label>
+    <input type="number" id="stud-spacing" placeholder="Enter stud spacing">
+
+    <label for="wall-ends">Wall Ends (1, 2, 3 studs):</label>
+    <select id="wall-ends">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+
+    <label for="plate-length">Wall Plate Board Length:</label>
+    <select id="plate-length">
+        <option value="8">8'</option>
+        <option value="10">10'</option>
+        <option value="12">12'</option>
+        <option value="14">14'</option>
+        <option value="16">16'</option>
+    </select>
+
+    <button onclick="calculate()">Calculate</button>
+    <button onclick="resetForm()">Reset</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    function calculate() {
+        const wallLength = parseFloat(document.getElementById('wall-length').value);
+        const studSpacing = parseFloat(document.getElementById('stud-spacing').value);
+        const wallEnds = parseInt(document.getElementById('wall-ends').value);
+        const plateLength = parseFloat(document.getElementById('plate-length').value);
+
+        if (isNaN(wallLength) || isNaN(studSpacing) || isNaN(wallEnds) || isNaN(plateLength)) {
+            alert('Please enter valid inputs');
+            return;
+        }
+
+        // Calculate the number of studs
+        const studs = Math.ceil((wallLength * 12) / studSpacing) + wallEnds;
+
+        // Calculate the number of wall plate boards
+        const plates = Math.ceil((wallLength * 3) / plateLength);
+
+        // Display the result
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `<h3>Results</h3>
+                               <p>Number of studs needed: ${studs}</p>
+                               <p>Number of wall plate boards needed: ${plates}</p>`;
+    }
+
+    function resetForm() {
+        document.getElementById('wall-length').value = '';
+        document.getElementById('stud-spacing').value = '';
+        document.getElementById('wall-ends').value = '1';
+        document.getElementById('plate-length').value = '8';
+        document.getElementById('result').innerHTML = '';
+    }
+</script>
+
+</body>
+</html>
