@@ -89,7 +89,7 @@
     <input type="number" id="wall-length" placeholder="Enter wall length">
 
     <label for="stud-spacing">Stud Spacing (Inches):</label>
-    <input type="number" id="stud-spacing" placeholder="Enter stud spacing">
+    <input type="number" id="stud-spacing" placeholder="Enter stud spacing" value="16">
 
     <label for="wall-ends">Wall Ends (1, 2, 3 studs):</label>
     <select id="wall-ends">
@@ -126,7 +126,14 @@
         }
 
         // Calculate the number of studs
-        const studs = Math.ceil((wallLength * 12) / studSpacing) + wallEnds;
+        let studs = Math.ceil((wallLength * 12) / studSpacing) + 1;
+
+        
+        if (wallEnds === 2) {
+            studs += 2;
+        } else if (wallEnds === 3) {
+            studs += 4; 
+        }
 
         // Calculate the number of wall plate boards
         const plates = Math.ceil((wallLength * 3) / plateLength);
@@ -140,12 +147,9 @@
 
     function resetForm() {
         document.getElementById('wall-length').value = '';
-        document.getElementById('stud-spacing').value = '';
+        document.getElementById('stud-spacing').value = '16';
         document.getElementById('wall-ends').value = '1';
         document.getElementById('plate-length').value = '8';
         document.getElementById('result').innerHTML = '';
     }
 </script>
-
-</body>
-</html>
