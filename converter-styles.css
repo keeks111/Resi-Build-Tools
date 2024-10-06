@@ -36,7 +36,7 @@ input {
 
 button {
     padding: 10px;
-    background: #5cb85c;
+    background: #007BFF;
     color: white;
     border: none;
     border-radius: 5px;
@@ -45,15 +45,15 @@ button {
 }
 
 button.reset {
-    background: #5cb85c;
+    background: #007BFF;
 }
 
 button:hover {
-    background: #4cae4c; 
+    background: #0056b3; 
 }
 
 button.reset:hover {
-    background: #4cae4c; 
+    background: #0056b3; 
 }
 
 #mmOutput, #inchesOutput {
