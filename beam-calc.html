@@ -4,56 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beam Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, button {
-            display: block;
-            width: calc(100% - 20px);
-            margin: 5px 0 10px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-        }
-        button {
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            width: 48%;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="beam-calc.css">
 </head>
 <body>
     <div class="container">
@@ -84,37 +35,6 @@
 
         <div id="result"></div>
     </div>
-
-    <script>
-        function toggleOutsideBeamWidth() {
-            const outsideBeams = document.getElementById('outside_beams').checked;
-            const container = document.getElementById('outside_beam_width_container');
-            container.style.display = outsideBeams ? 'block' : 'none';
-        }
-
-        function calculate() {
-            const length = parseFloat(document.getElementById('length').value);
-            const numberOfBeams = parseFloat(document.getElementById('number_of_beams').value);
-            const widthOfBeams = parseFloat(document.getElementById('width_of_beams').value);
-            const outsideBeams = document.getElementById('outside_beams').checked;
-            const widthOfOutsideBeams = parseFloat(document.getElementById('width_of_outside_beams').value);
-
-            if (isNaN(length) || isNaN(numberOfBeams) || isNaN(widthOfBeams) || (outsideBeams && isNaN(widthOfOutsideBeams))) {
-                document.getElementById('result').textContent = 'Please enter valid numbers.';
-                return;
-            }
-
-            let total;
-            if (outsideBeams) {
-                const subTotal = length - (2 * widthOfOutsideBeams) - ((numberOfBeams - 2) * widthOfBeams);
-                total = subTotal / (numberOfBeams - 1);
-            } else {
-                const subTotal = length - (numberOfBeams * widthOfBeams);
-                total = subTotal / (numberOfBeams + 1);
-            }
-
-            document.getElementById('result').textContent = `Total space between beams: ${total.toFixed(4)}`;
-        }
-    </script>
+    <script src="beam-calc.js"></script>
 </body>
 </html>
