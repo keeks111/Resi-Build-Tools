@@ -39,7 +39,7 @@
     function convertDecimal() {
         const input = parseFloat(document.getElementById('decimalInput').value);
         if (isNaN(input) || input <= 0 || input >= 1) {
-            alert("Please enter a valid decimal number between 0 and 1.");
+            alert("This exceeds the one-inch scale. Please enter a number starting with 0.");
             return;
         }
 
