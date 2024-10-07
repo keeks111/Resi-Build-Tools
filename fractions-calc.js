@@ -93,10 +93,8 @@ function updateDisplay() {
 }
 
 function parseMixedNumber(input) {
-    // Implement parsing logic here
-    // This should return an object with numerator and denominator properties
-    const parts = input.split(' ');
     let whole = 0, numerator = 0, denominator = 1;
+    const parts = input.split(' ');
 
     if (parts.length === 2) {
         whole = parseInt(parts[0]);
@@ -112,31 +110,43 @@ function parseMixedNumber(input) {
     }
 
     numerator += whole * denominator;
-    return { numerator, denominator };
+    return simplifyFraction({ numerator, denominator });
+}
+
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+function simplifyFraction(fraction) {
+    const commonDivisor = gcd(fraction.numerator, fraction.denominator);
+    return {
+        numerator: fraction.numerator / commonDivisor,
+        denominator: fraction.denominator / commonDivisor
+    };
 }
 
 function addFractions(a, b) {
     const numerator = a.numerator * b.denominator + b.numerator * a.denominator;
     const denominator = a.denominator * b.denominator;
-    return { numerator, denominator };
+    return simplifyFraction({ numerator, denominator });
 }
 
 function subtractFractions(a, b) {
     const numerator = a.numerator * b.denominator - b.numerator * a.denominator;
     const denominator = a.denominator * b.denominator;
-    return { numerator, denominator };
+    return simplifyFraction({ numerator, denominator });
 }
 
 function multiplyFractions(a, b) {
     const numerator = a.numerator * b.numerator;
     const denominator = a.denominator * b.denominator;
-    return { numerator, denominator };
+    return simplifyFraction({ numerator, denominator });
 }
 
 function divideFractions(a, b) {
     const numerator = a.numerator * b.denominator;
     const denominator = a.denominator * b.numerator;
-    return { numerator, denominator };
+    return simplifyFraction({ numerator, denominator });
 }
 
 function formatMixedNumber(result) {
