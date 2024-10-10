@@ -1,6 +1,8 @@
 let currentInput = '';
 let previousInput = '';
 let currentOperation = null;
+let fractionAdded = false;
+let decimalAdded = false;
 
 function appendNumber(number) {
     currentInput += number;
@@ -8,8 +10,13 @@ function appendNumber(number) {
 }
 
 function appendFraction() {
-    currentInput += '/';
-    updateDisplay();
+    if (!fractionAdded) {
+        currentInput += '/';
+        fractionAdded = true;
+        updateDisplay();
+    } else {
+        console.log('Fraction already added');
+    }
 }
 
 function appendSpace() {
@@ -18,9 +25,12 @@ function appendSpace() {
 }
 
 function appendDecimal() {
-    if (!currentInput.includes('.')) {
+    if (!decimalAdded) {
         currentInput += '.';
+        decimalAdded = true;
         updateDisplay();
+    } else {
+        console.log('Decimal already added');
     }
 }
 
@@ -34,45 +44,48 @@ function toggleSign() {
 }
 
 function setOperation(operation) {
-    if (currentInput === '') return;
+    if (currentInput === '' && previousInput === '') return;
+    if (currentInput === '' && previousInput !== '') {
+        currentOperation = operation;
+        return;
+    }
     if (previousInput !== '') {
         calculate();
     }
     currentOperation = operation;
     previousInput = currentInput;
     currentInput = '';
+    fractionAdded = false;
+    decimalAdded = false;
 }
 
 function calculate() {
     let result;
-    const prev = parseMixedNumber(previousInput);
-    const current = parseMixedNumber(currentInput);
+    const prev = parseInput(previousInput);
+    const current = parseInput(currentInput);
 
     switch (currentOperation) {
         case '+':
-            result = addFractions(prev, current);
+            result = prev + current;
             break;
         case '-':
-            result = subtractFractions(prev, current);
+            result = prev - current;
             break;
         case '*':
-            result = multiplyFractions(prev, current);
+            result = prev * current;
             break;
         case '/':
-            result = divideFractions(prev, current);
+            result = prev / current;
             break;
         default:
             return;
     }
 
-    if (!isValidFraction(result)) {
-        currentInput = (result.numerator / result.denominator).toString();
-    } else {
-        currentInput = formatMixedNumber(result);
-    }
-
+    currentInput = formatResult(result);
     currentOperation = null;
     previousInput = '';
+    fractionAdded = false;
+    decimalAdded = false;
     updateDisplay();
 }
 
@@ -80,10 +93,18 @@ function clearDisplay() {
     currentInput = '';
     previousInput = '';
     currentOperation = null;
+    fractionAdded = false;
+    decimalAdded = false;
     updateDisplay();
 }
 
 function deleteLastInput() {
+    if (currentInput.endsWith('/')) {
+        fractionAdded = false;
+    }
+    if (currentInput.endsWith('.')) {
+        decimalAdded = false;
+    }
     currentInput = currentInput.slice(0, -1);
     updateDisplay();
 }
@@ -92,9 +113,17 @@ function updateDisplay() {
     document.getElementById('display').value = currentInput;
 }
 
-function parseMixedNumber(input) {
-    let whole = 0, numerator = 0, denominator = 1;
+function parseInput(input) {
+    if (input.includes('/')) {
+        return parseFraction(input);
+    } else {
+        return parseFloat(input);
+    }
+}
+
+function parseFraction(input) {
     const parts = input.split(' ');
+    let whole = 0, numerator = 0, denominator = 1;
 
     if (parts.length === 2) {
         whole = parseInt(parts[0]);
@@ -110,49 +139,45 @@ function parseMixedNumber(input) {
     }
 
     numerator += whole * denominator;
-    return simplifyFraction({ numerator, denominator });
+    return numerator / denominator;
 }
 
 function gcd(a, b) {
     return b === 0 ? a : gcd(b, a % b);
 }
 
-function simplifyFraction(fraction) {
-    const commonDivisor = gcd(fraction.numerator, fraction.denominator);
-    return {
-        numerator: fraction.numerator / commonDivisor,
-        denominator: fraction.denominator / commonDivisor
-    };
+function decimalToFraction(decimal) {
+    const tolerance = 1.0E-6;
+    let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = decimal;
+    do {
+        const a = Math.floor(b);
+        let aux = h1;
+        h1 = a * h1 + h2;
+        h2 = aux;
+        aux = k1;
+        k1 = a * k1 + k2;
+        k2 = aux;
+        b = 1 / (b - a);
+    } while (Math.abs(decimal - h1 / k1) > decimal * tolerance);
+
+    return { numerator: h1, denominator: k1 };
 }
 
-function addFractions(a, b) {
-    const numerator = a.numerator * b.denominator + b.numerator * a.denominator;
-    const denominator = a.denominator * b.denominator;
-    return simplifyFraction({ numerator, denominator });
+function formatResult(result) {
+    const fraction = decimalToFraction(result);
+    const validDenominators = [2, 4, 8, 16];
+
+    if (validDenominators.includes(fraction.denominator)) {
+        return formatMixedNumber(fraction);
+    } else {
+        return result.toString();
+    }
 }
 
-function subtractFractions(a, b) {
-    const numerator = a.numerator * b.denominator - b.numerator * a.denominator;
-    const denominator = a.denominator * b.denominator;
-    return simplifyFraction({ numerator, denominator });
-}
-
-function multiplyFractions(a, b) {
-    const numerator = a.numerator * b.numerator;
-    const denominator = a.denominator * b.denominator;
-    return simplifyFraction({ numerator, denominator });
-}
-
-function divideFractions(a, b) {
-    const numerator = a.numerator * b.denominator;
-    const denominator = a.denominator * b.numerator;
-    return simplifyFraction({ numerator, denominator });
-}
-
-function formatMixedNumber(result) {
-    const whole = Math.floor(result.numerator / result.denominator);
-    const numerator = result.numerator % result.denominator;
-    const denominator = result.denominator;
+function formatMixedNumber(fraction) {
+    const whole = Math.floor(fraction.numerator / fraction.denominator);
+    const numerator = fraction.numerator % fraction.denominator;
+    const denominator = fraction.denominator;
     if (numerator === 0) {
         return whole.toString();
     } else if (whole === 0) {
@@ -162,7 +187,26 @@ function formatMixedNumber(result) {
     }
 }
 
-function isValidFraction(fraction) {
-    const validDenominators = [2, 4, 8, 16];
-    return validDenominators.includes(fraction.denominator);
+function plotGraph() {
+    const displayValue = document.getElementById('display').value;
+    const decimalValue = parseInput(displayValue);
+    const fractionalPart = decimalValue - Math.floor(decimalValue);
+    if (displayValue) {
+        console.log('Storing fractional part:', fractionalPart);
+        const url = new URL('fraction-finder.html', window.location.href);
+        url.searchParams.set('decimalValue', fractionalPart);
+        console.log('Redirecting to:', url.toString());
+        window.location.href = url.toString();
+    } else {
+        alert('No value to plot.');
+    }
 }
+
+// Attach event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('plotButton').addEventListener('click', plotGraph);
+    document.querySelector('.clear').addEventListener('click', clearDisplay);
+    document.querySelector('.delete').addEventListener('click', deleteLastInput);
+    document.querySelector('.toggle-sign').addEventListener('click', toggleSign);
+    document.querySelector('.equals').addEventListener('click', calculate);
+});
