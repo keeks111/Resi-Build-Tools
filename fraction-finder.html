@@ -27,6 +27,20 @@
 </div>
 
 <script src="fraction-finder.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOMContentLoaded event fired');
+        const urlParams = new URLSearchParams(window.location.search);
+        const decimalValue = urlParams.get('decimalValue');
+        console.log('Retrieved decimal value:', decimalValue);
+        if (decimalValue) {
+            document.getElementById('decimalInput').value = decimalValue;
+            console.log('Decimal value set in input field');
+        } else {
+            console.log('No decimal value found in URL parameters');
+        }
+    });
+</script>
 
 </body>
 
