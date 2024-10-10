@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fraction Calculator</title>
     <link rel="stylesheet" href="fractions-calc.css">
-
 </head>
 <body>
     <div class="calculator">
@@ -14,11 +13,11 @@
             <button class="button" onclick="appendNumber('7')">7</button>
             <button class="button" onclick="appendNumber('8')">8</button>
             <button class="button" onclick="appendNumber('9')">9</button>
-            <button class="button operator" onclick="setOperation('+')">+</button>
+            <button class="button toggle-sign">+/-</button>
             <button class="button" onclick="appendNumber('4')">4</button>
             <button class="button" onclick="appendNumber('5')">5</button>
             <button class="button" onclick="appendNumber('6')">6</button>
-            <button class="button operator" onclick="setOperation('-')">-</button>
+            <button class="button operator" onclick="setOperation('/')">÷</button>
             <button class="button" onclick="appendNumber('1')">1</button>
             <button class="button" onclick="appendNumber('2')">2</button>
             <button class="button" onclick="appendNumber('3')">3</button>
@@ -26,12 +25,13 @@
             <button class="button" onclick="appendNumber('0')">0</button>
             <button class="button" onclick="appendFraction('/')">/</button>
             <button class="button" onclick="appendSpace()">Frac</button>
-            <button class="button operator" onclick="setOperation('/')">÷</button>
-            <button class="button clear" onclick="clearDisplay()">C</button>
-            <button class="button delete" onclick="deleteLastInput()">Del</button>
+            <button class="button operator" onclick="setOperation('-')">-</button>
+            <button class="button clear">C</button>
+            <button class="button delete">Del</button>
             <button class="button decimal" onclick="appendDecimal()">.</button>
-            <button class="button toggle-sign" onclick="toggleSign()">+/-</button>
-            <button class="button equals" onclick="calculate()">=</button>
+            <button class="button operator" onclick="setOperation('+')">+</button>
+            <button class="button equals">=</button>
+            <button id="plotButton">Plot</button>
         </div>
     </div>
     <script src="fractions-calc.js"></script>
