@@ -93,3 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return [numerator / divisor, denominator / divisor];
     }
 });
+function convertToFraction() {
+    const decimalValue = document.getElementById('decimal-input').value;
+    if (decimalValue) {
+        // Implement the conversion logic here
+        alert('Converting ' + decimalValue + ' to fraction...');
+    } else {
+        alert('Please paste a decimal value.');
+    }
+}
